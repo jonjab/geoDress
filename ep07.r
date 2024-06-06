@@ -26,3 +26,20 @@ point_HARV
 ncol(point_HARV)
 ncol(lines_HARV)
 names(lines_HARV)
+
+# challenge: "Attributes for different spatial classes" 
+# for the point and poly files:
+#    1. How many attributes does each have?
+#    2. Who owns the site in the point_HARV
+#       data object?  
+#    3. Which of the following is NOT an attribute of the
+#        point_HARV data object?
+#         A) Latitude
+#         B) County 
+#         C) Country
+
+
+ncol(point_HARV)
+ncol(aoi_boundary_HARV)
+
+
