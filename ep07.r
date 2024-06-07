@@ -3,6 +3,7 @@
 # lesson says we need:
 library(sf)
 library(terra)
+library(dplyr)
 library(ggplot2)
 
 
@@ -42,4 +43,88 @@ names(lines_HARV)
 ncol(point_HARV)
 ncol(aoi_boundary_HARV)
 
+# explore a shapefile
+lines_HARV$TYPE
+unique(lines_HARV$TYPE)
 
+
+# make an object with subsetted lines
+# this requires dplyr
+footpath_HARV <- lines_HARV %>% 
+  filter(TYPE == "footpath")
+
+
+# p 6 of notes pdf
+ggplot() +
+  geom_sf (data = footpath_HARV)+
+  ggtitle(
+  "NEON Harvard Forest Field Site", 
+   subtitle  =  "Footpaths"
+) + coord_sf()
+
+# is that 1 line or 2?
+# same as above, with an
+# aesthetic added to the lines
+# (color and size)
+# the factor for the color scheme gets built on the fly
+ggplot() +
+  geom_sf(data = footpath_HARV, 
+          aes(color = factor(OBJECTID)), 
+          size = 1.5) + 
+          labs(color = 'Footpath ID') +
+  ggtitle(
+    "NEON Harvard Forest Field Site", 
+    subtitle  =  "Footpaths"
+  ) + coord_sf()
+
+# Can graph all the lines:
+# (this part not in lesson)
+ggplot() +
+  geom_sf(data = lines_HARV, 
+          aes(color = factor(OBJECTID)), 
+          size = 1.5) + 
+  labs(color = 'Footpath ID') +
+  ggtitle(
+    "NEON Harvard Forest Field Site", 
+    subtitle  =  "All the lines"
+  ) + coord_sf()
+
+# Challenge:
+# Filter out just the boardwalks and
+# map them.
+
+boardwalks_HARV <- lines_HARV %>% 
+  filter(TYPE == "boardwalk")  
+
+ggplot() +
+  geom_sf(data = boardwalks_HARV, 
+          aes(color = factor(OBJECTID)), 
+          size = 1.5) + 
+  labs(color = 'Footpath ID') +
+  ggtitle(
+    "NEON Harvard Forest Field Site", 
+    subtitle  =  "Just the romantic boardwalks"
+  ) + coord_sf() 
+
+
+# challenge part 2:
+# Stone walls, each colored differently
+
+unique(lines_HARV$TYPE)
+
+walls_HARV <- lines_HARV %>% 
+  filter(TYPE == "stone wall")  
+
+ggplot() +
+  geom_sf(data = walls_HARV, 
+          aes(color = factor(OBJECTID)), 
+          size = 1.5) + 
+  labs(color = 'Footpath ID') +
+  ggtitle(
+    "NEON Harvard Forest Field Site", 
+    subtitle  =  "Just the romantic boardwalks"
+  ) + coord_sf() 
+
+
+
+  ggtitle("NEON Harvard Forest Field Site", subtitle = "Footpaths") +  coord_sf()
