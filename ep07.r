@@ -125,6 +125,22 @@ ggplot() +
     subtitle  =  "Just the romantic boardwalks"
   ) + coord_sf() 
 
+# Customize Plots
+# ^^ header from lesson. Should be: 
+# Specify colors for attributes
+
+# we'll need 4 colors
+unique(lines_HARV$TYPE)
+
+road_colors <- c("blue", "green", "navy", "purple")
+
+ggplot() +
+  geom_sf(data = lines_HARV, aes(color = TYPE)) +
+  scale_color_manual(values = road_colors) +
+  labs(color = 'Road Type') +
+  ggtitle("NEON Harvard Forest Field Site", subtitle = "Roads & Trails") +  coord_sf()
 
 
-  ggtitle("NEON Harvard Forest Field Site", subtitle = "Footpaths") +  coord_sf()
+
+
+ggtitle("NEON Harvard Forest Field Site", subtitle = "Footpaths") +  coord_sf()
