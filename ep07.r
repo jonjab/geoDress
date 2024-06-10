@@ -152,7 +152,6 @@ line_widths <- c(1,4,16,32)
 ggplot() +
   geom_sf(data = lines_HARV, aes(color = TYPE)) +
   scale_color_manual(values = road_colors) +
-  scale_size_manual(values = line_widths) +  
   labs(color = 'Road Type') +
   ggtitle("NEON Harvard Forest Field Site", 
           subtitle = "Roads & Trails - Vary Line Width") +  
@@ -160,8 +159,7 @@ ggplot() +
 
 ###################
 ggplot() +
-  geom_sf(data = lines_HARV) +
-  scale_linewidth() +
+  geom_sf(data = lines_HARV, aes(color = TYPE), linewidth = 2) +
   ggtitle("NEON Harvard Forest Field Site",
           subtitle = "Roads & Trails - Line width varies") +
   coord_sf()
@@ -170,7 +168,7 @@ ggplot() +
 new_colors <- c("springgreen", "blue", "magenta", "orange")
 
 ggplot() +
-  geom_sf(data = lines_HARV, aes(color = TYPE), size = 2.5) +
+  geom_sf(data = lines_HARV, aes(color = TYPE), linewidth = line_widths) +
   scale_color_manual(values = new_colors) +
   labs(color = 'Road Type') +
   theme(legend.text = element_text(size = 10),
@@ -178,3 +176,4 @@ ggplot() +
   ggtitle("NEON Harvard Forest Field Site",
           subtitle = "Roads & Trails - Pretty Colors") +
   coord_sf()
+
