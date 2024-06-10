@@ -3,8 +3,11 @@
 # lesson says we need:
 library(sf)
 library(terra)
-library(dplyr)
 library(ggplot2)
+
+# not specified in narrative
+library(dplyr)
+
 
 
 
@@ -142,5 +145,36 @@ ggplot() +
 
 
 
+# Adjust Line Width
+# this seems to be broken in the lesson!
+line_widths <- c(1,4,16,32)
 
-ggtitle("NEON Harvard Forest Field Site", subtitle = "Footpaths") +  coord_sf()
+ggplot() +
+  geom_sf(data = lines_HARV, aes(color = TYPE)) +
+  scale_color_manual(values = road_colors) +
+  scale_size_manual(values = line_widths) +  
+  labs(color = 'Road Type') +
+  ggtitle("NEON Harvard Forest Field Site", 
+          subtitle = "Roads & Trails - Vary Line Width") +  
+  coord_sf()
+
+###################
+ggplot() +
+  geom_sf(data = lines_HARV) +
+  scale_linewidth() +
+  ggtitle("NEON Harvard Forest Field Site",
+          subtitle = "Roads & Trails - Line width varies") +
+  coord_sf()
+
+
+new_colors <- c("springgreen", "blue", "magenta", "orange")
+
+ggplot() +
+  geom_sf(data = lines_HARV, aes(color = TYPE), size = 2.5) +
+  scale_color_manual(values = new_colors) +
+  labs(color = 'Road Type') +
+  theme(legend.text = element_text(size = 10),
+        legend.box.background = element_rect(size = 1)) +
+  ggtitle("NEON Harvard Forest Field Site",
+          subtitle = "Roads & Trails - Pretty Colors") +
+  coord_sf()
