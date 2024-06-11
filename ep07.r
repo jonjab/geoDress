@@ -13,10 +13,10 @@ library(dplyr)
 
 # this really needs goals re-stated in english.
 
-# 3 shapefiles from ep 6 if you lost them:
-aoi_boundary_HARV <- st_read("data/NEON-DS-Site-Layout-Files/HARV/HarClip_UTMZ18.shp")
-lines_HARV <- st_read("data/NEON-DS-Site-Layout-Files/HARV/HARV_roads.shp")
-point_HARV <- st_read('data/NEON-DS-Site-Layout-Files/HARV/HARVtower_UTM18N.shp')
+# the shapefile from ep 6 that we are going to use:
+# BUT: note the argument
+lines_HARV <- st_read("data/NEON-DS-Site-Layout-Files/HARV/HARV_roads.shp",
+                      stringsAsFactors = TRUE)
 
 # 4 different pieces of metadata we can look at:
 st_geometry_type(aoi_boundary_HARV)
@@ -146,34 +146,137 @@ ggplot() +
 
 
 # Adjust Line Width
-# this seems to be broken in the lesson!
-line_widths <- c(1,4,16,32)
+line_widths <- c(.5,1,2,3)
 
+# does this work for anyone?
 ggplot() +
-  geom_sf(data = lines_HARV, aes(color = TYPE)) +
+  geom_sf(data = lines_HARV, aes(color = TYPE, size = TYPE)) +
   scale_color_manual(values = road_colors) +
   labs(color = 'Road Type') +
-  ggtitle("NEON Harvard Forest Field Site", 
-          subtitle = "Roads & Trails - Vary Line Width") +  
+  scale_size_manual(values = line_widths) +
+  ggtitle("NEON Harvard Forest Field Site",
+          subtitle = "Roads & Trails - Line width varies BROKEN.") +
   coord_sf()
 
-###################
+# have to use linewidth! As of ggplot2 3.4.0
+#################
 ggplot() +
-  geom_sf(data = lines_HARV, aes(color = TYPE), linewidth = 2) +
+  geom_sf(data = lines_HARV, aes(color = TYPE, linewidth=TYPE)) +
+  scale_color_manual(values = road_colors) +
+  scale_discrete_manual("linewidth", values=line_widths)+
+  labs(color = 'Road Type') +
   ggtitle("NEON Harvard Forest Field Site",
           subtitle = "Roads & Trails - Line width varies") +
   coord_sf()
 
 
-new_colors <- c("springgreen", "blue", "magenta", "orange")
+
+# CHALLENGE: customize the attributes:
+# woods road size = 6
+# boardwalks size = 1
+# footpath size = 3
+# stone wall size = 2
+
+# can view my previous output OR unique()
+# levels() wont' work! because factors
+str(lines_HARV$TYPE)
+unique(lines_HARV$TYPE)
+levels(lines_HARV$TYPE)
+
+
+# remake our size vector in the same order:
+custom_line_widths <- c(1,3,2,6)
 
 ggplot() +
-  geom_sf(data = lines_HARV, aes(color = TYPE), linewidth = line_widths) +
-  scale_color_manual(values = new_colors) +
+  geom_sf(data = lines_HARV, aes(color = TYPE, linewidth=TYPE)) +
+  scale_color_manual(values = road_colors) +
+  scale_discrete_manual("linewidth", values=custom_line_widths)+
   labs(color = 'Road Type') +
-  theme(legend.text = element_text(size = 10),
-        legend.box.background = element_rect(size = 1)) +
   ggtitle("NEON Harvard Forest Field Site",
-          subtitle = "Roads & Trails - Pretty Colors") +
+          subtitle = "Roads & Trails - Fat Purple Road") +
   coord_sf()
 
+# get rid of the size in the legend
+ggplot() +
+  geom_sf(data = lines_HARV, aes(color = TYPE, linewidth=TYPE)) +
+  scale_color_manual(values = road_colors) +
+  scale_discrete_manual("linewidth", values=custom_line_widths, guide="none")+
+  labs(color = 'Road Type') +
+  ggtitle("NEON Harvard Forest Field Site",
+          subtitle = "Roads & Trails - Fat Purple Road") +
+  coord_sf()
+
+
+
+
+
+###################
+# Am I skipping customizing the legend box?
+
+new_colors <- c("springgreen", "blue", "magenta", "orange")
+
+
+# Challenge: Plot lines by Attribute
+# Bike and horse paths
+# Create a plot that emphasizes roads 
+# by showing ONLY roads where
+# where bicycles and horses are allowed.
+# (hint: lines_HARV$)
+
+levels(lines_HARV$BicyclesHo)
+lines_HARV$BicyclesHo
+
+# the lesson advises pull:
+lines_HARV %>%
+  pull(BicyclesHo) %>%
+  unique()
+
+lines_showHarv <-
+  lines_HARV %>%
+  filter(BicyclesHo == "Bicycles and Horses Allowed")
+
+
+# this solves the challenge, but is not a good map
+ggplot() +
+  geom_sf(data = lines_showHarv, aes(color = BicyclesHo), linewidth = 2) +
+  scale_color_manual(values = "magenta") +
+  ggtitle("NEON Harvard Forest Field Site",
+          subtitle = "Roads Where Bikes and Horses Are Allowed") +
+  coord_sf()
+
+# this plots the the other roads as well:
+ggplot() +
+geom_sf(data = lines_HARV) +
+  geom_sf(data = lines_showHarv, aes(color = BicyclesHo), linewidth = 2) +
+  scale_color_manual(values = "magenta") +
+  ggtitle("NEON Harvard Forest Field Site",
+          subtitle = "Roads Where Bikes and Horses Are Allowed") +
+  coord_sf()
+
+
+# CHALLENGE: Plot Polygons
+# Create a map of the state boundaries in the United States 
+# using the data located in your downloaded data folder: 
+# NEON-DS-Site-Layout-Files/US-Boundary-Layers\US-State-Boundaries-Census-2014. 
+# Apply a line color to each state using its region value. Add a legend.
+
+# the st_zm is totally mandatory!
+# I have no idea why it gets in the way.
+states <- st_read("data/NEON-DS-Site-Layout-Files/US-Boundary-Layers/US-State-Boundaries-Census-2014.shp") %>% st_zm()
+colnames(states)
+unique(states$region)
+str(states$region)
+
+# you don't actually need to do this
+# states$region <- as.factor(states$region)
+
+colors <- c("purple", "springgreen", "yellow", "brown", "navy")
+ggplot() +
+  geom_sf(data = states, aes(color = region)) +
+  scale_color_manual(values =colors) +
+  ggtitle("U.S. State Boundaries Colored by Region") +
+  coord_sf()
+
+  
+ 
+  
