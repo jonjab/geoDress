@@ -99,10 +99,11 @@ ggplot() +
 boardwalks_HARV <- lines_HARV %>% 
   filter(TYPE == "boardwalk")  
 
+#
 ggplot() +
   geom_sf(data = boardwalks_HARV, 
           aes(color = factor(OBJECTID)), 
-          size = 1.5) + 
+          size = 5.5) + 
   labs(color = 'Footpath ID') +
   ggtitle(
     "NEON Harvard Forest Field Site", 
@@ -149,6 +150,7 @@ ggplot() +
 line_widths <- c(.5,1,2,3)
 
 # does this work for anyone?
+# it should not!!!
 ggplot() +
   geom_sf(data = lines_HARV, aes(color = TYPE, size = TYPE)) +
   scale_color_manual(values = road_colors) +
@@ -166,7 +168,7 @@ ggplot() +
   scale_discrete_manual("linewidth", values=line_widths)+
   labs(color = 'Road Type') +
   ggtitle("NEON Harvard Forest Field Site",
-          subtitle = "Roads & Trails - Line width varies") +
+          subtitle = "Roads & Trails - Line width  and color varies") +
   coord_sf()
 
 
